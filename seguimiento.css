@@ -1,0 +1,85 @@
+.page-checkout { background: var(--carbon); min-height: 100vh; }
+
+.checkout-main {
+  max-width: 960px; margin: 0 auto;
+  padding: 100px 24px 60px;
+}
+.checkout-grid {
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 32px; align-items: start;
+}
+.nav-secure { font-size: 0.8rem; color: var(--text-lt); }
+
+/* Resumen */
+.resumen-box {
+  background: var(--smoke); border: 1px solid var(--charcoal); border-radius: 8px; padding: 28px;
+  position: sticky; top: 88px;
+}
+.resumen-box h2 { font-family: var(--ff-display); font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--charcoal); }
+.resumen-codigo { font-size: 0.75rem; color: var(--text-lt); margin-bottom: 16px; letter-spacing: 0.06em; }
+.resumen-item { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 8px 0; border-bottom: 1px solid var(--charcoal); color: var(--cream); }
+.resumen-item-precio { color: var(--gold); font-weight: 600; }
+.resumen-total { display: flex; justify-content: space-between; margin-top: 16px; padding-top: 14px; font-family: var(--ff-display); font-size: 1.1rem; color: var(--white); }
+.total-monto { color: var(--gold); }
+.resumen-dir { font-size: 0.78rem; color: var(--text-lt); margin-top: 14px; }
+
+/* Pago */
+.pago-box {
+  background: var(--smoke); border: 1px solid var(--charcoal); border-radius: 8px; padding: 28px;
+}
+.pago-box h2 { font-family: var(--ff-display); font-size: 1.2rem; color: var(--gold); margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--charcoal); }
+
+.metodos { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.metodo {
+  display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--charcoal); border-radius: 6px; padding: 14px 16px;
+  cursor: pointer; transition: border-color var(--transition), background var(--transition);
+}
+.metodo input[type=radio] { display: none; }
+.metodo.activo { border-color: var(--gold); background: rgba(232,168,56,0.07); }
+.metodo-icon { font-size: 1.4rem; }
+.metodo-nombre { font-size: 0.9rem; font-weight: 500; color: var(--cream); flex: 1; }
+.metodo-badge { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--gold); color: var(--carbon); padding: 2px 8px; border-radius: 100px; }
+
+/* Tarjeta preview */
+.tarjeta-preview {
+  background: linear-gradient(135deg, var(--red-dark), var(--red), #E67E22);
+  border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;
+  min-height: 120px; position: relative; color: white;
+}
+.tarjeta-chip { font-size: 1.4rem; margin-bottom: 16px; }
+.tarjeta-numero { font-size: 1.15rem; letter-spacing: 0.15em; font-weight: 600; margin-bottom: 16px; }
+.tarjeta-footer { display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.9; }
+
+.campo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn-pagar {
+  width: 100%; background: var(--red); color: var(--white);
+  padding: 15px; border-radius: var(--r); font-size: 1rem; font-weight: 600;
+  margin-top: 20px; transition: background var(--transition), transform var(--transition);
+  border: none; cursor: pointer;
+}
+.btn-pagar:hover { background: var(--red-dark); transform: translateY(-1px); }
+.pago-seguro-txt { font-size: 0.72rem; color: var(--text-lt); text-align: center; margin-top: 10px; }
+
+.efectivo-info { text-align: center; padding: 24px; }
+.efectivo-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+.efectivo-info p { font-size: 0.875rem; color: var(--text-lt); margin-bottom: 8px; }
+.efectivo-monto { font-size: 1rem; color: var(--cream); }
+
+/* Loading overlay */
+.overlay-loading {
+  position: fixed; inset: 0; background: rgba(26,26,26,0.9);
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+.spinner-box { text-align: center; color: var(--cream); }
+.spinner {
+  width: 48px; height: 48px; border: 3px solid var(--charcoal);
+  border-top-color: var(--gold); border-radius: 50%;
+  animation: spin 0.9s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 700px) {
+  .checkout-grid { grid-template-columns: 1fr; }
+  .resumen-box { position: static; }
+}
