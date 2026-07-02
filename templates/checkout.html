@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagar pedido — Forno Nero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/checkout.css">
+</head>
+<body class="page-checkout">
+
+  <nav class="nav scrolled">
+    <div class="nav-inner">
+      <a href="/" class="logo">Forno Nero</a>
+      <span class="nav-secure">🔒 Pago seguro</span>
+    </div>
+  </nav>
+
+  <main class="checkout-main">
+    <div class="checkout-grid">
+
+      <!-- Resumen del pedido -->
+      <aside class="resumen-box">
+        <h2>Tu pedido</h2>
+        <div class="resumen-codigo">Código: <strong>{{ pedido.codigo }}</strong></div>
+        <ul class="resumen-items">
+          {% set items = pedido.items_json | tojson | safe %}
+        </ul>
+        <div id="resumen-items-js" data-items='{{ pedido.items_json }}'></div>
+        <div class="resumen-total">
+          <span>Total a pagar</span>
+          <span class="total-monto">${{ "{:,.0f}".format(pedido.total).replace(",", ".") }}</span>
+        </div>
+        <p class="resumen-dir">📍 {{ pedido.direccion }}</p>
+      </aside>
+
+      <!-- Formulario de pago -->
+      <section class="pago-box">
+        <h2>Método de pago</h2>
+
+        <div class="metodos">
+          <label class="metodo activo" data-metodo="webpay">
+            <input type="radio" name="metodo" value="webpay" checked>
+            <span class="metodo-icon">💳</span>
+            <span class="metodo-nombre">Webpay / Débito</span>
+            <span class="metodo-badge">Recomendado</span>
+          </label>
+          <label class="metodo" data-metodo="mercadopago">
+            <input type="radio" name="metodo" value="mercadopago">
+            <span class="metodo-icon">🔵</span>
+            <span class="metodo-nombre">MercadoPago</span>
+          </label>
+          <label class="metodo" data-metodo="efectivo">
+            <input type="radio" name="metodo" value="efectivo">
+            <span class="metodo-icon">💵</span>
+            <span class="metodo-nombre">Efectivo al recibir</span>
+          </label>
+        </div>
+
+        <!-- Panel tarjeta (simulado) -->
+        <div class="panel-tarjeta" id="panel-tarjeta">
+          <div class="tarjeta-preview" id="tarjeta-preview">
+            <div class="tarjeta-chip">▬</div>
+            <div class="tarjeta-numero" id="prev-numero">•••• •••• •••• ••••</div>
+            <div class="tarjeta-footer">
+              <span id="prev-nombre">NOMBRE APELLIDO</span>
+              <span id="prev-exp">MM/AA</span>
+            </div>
+          </div>
+          <div class="campo">
+            <label>Número de tarjeta</label>
+            <input type="text" id="card-numero" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+          <div class="campo-row">
+            <div class="campo">
+              <label>Vencimiento</label>
+              <input type="text" id="card-exp" placeholder="MM/AA" maxlength="5">
+            </div>
+            <div class="campo">
+              <label>CVV</label>
+              <input type="text" id="card-cvv" placeholder="•••" maxlength="3">
+            </div>
+          </div>
+          <div class="campo">
+            <label>Nombre en la tarjeta</label>
+            <input type="text" id="card-nombre" placeholder="Como aparece en la tarjeta">
+          </div>
+        </div>
+
+        <div class="panel-efectivo" id="panel-efectivo" style="display:none">
+          <div class="efectivo-info">
+            <span class="efectivo-icon">💵</span>
+            <p>Paga en efectivo al repartidor. Ten el monto exacto si es posible.</p>
+            <p class="efectivo-monto">Prepara: <strong>${{ "{:,.0f}".format(pedido.total).replace(",", ".") }}</strong></p>
+          </div>
+        </div>
+
+        <button class="btn-pagar" id="btn-pagar" data-token="{{ pedido.pago_token }}">
+          Pagar ${{ "{:,.0f}".format(pedido.total).replace(",", ".") }}
+        </button>
+        <p class="pago-seguro-txt">🔒 Transacción cifrada y segura · Datos no almacenados</p>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <div class="overlay-loading" id="overlay-loading" style="display:none">
+    <div class="spinner-box">
+      <div class="spinner"></div>
+      <p>Procesando pago…</p>
+    </div>
+  </div>
+
+  <script src="/static/js/checkout.js"></script>
+</body>
+</html>
