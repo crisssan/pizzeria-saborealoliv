@@ -1,8 +1,2 @@
-__pycache__/
-*.pyc
-*.pyo
-pedidos.db
-.env
-*.egg-info/
-dist/
-build/
+flask>=3.0
+gunicorn>=21.0
