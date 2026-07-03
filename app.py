@@ -4,6 +4,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+from zoneinfo import ZoneInfo
+TZ_CHILE = ZoneInfo("America/Santiago")
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "saboresaloliv2025")
@@ -44,7 +46,7 @@ ESTADO_MINUTOS = {"recibido": 0, "preparando": 2, "en_horno": 8, "en_camino": 15
 
 # ── HORARIO ────────────────────────────────────────────────────────────────────
 def esta_abierto():
-    ahora = datetime.now()
+    ahora = datetime.now(TZ_CHILE)
     # 3=Jueves, 4=Viernes, 5=Sabado
     if ahora.weekday() not in [3, 4, 5]:
         return False
@@ -53,7 +55,7 @@ def esta_abierto():
 
 def proximo_horario():
     dias = {3: "Jueves", 4: "Viernes", 5: "Sabado"}
-    ahora = datetime.now()
+    ahora = datetime.now(TZ_CHILE)
     for i in range(1, 8):
         dia = (ahora.weekday() + i) % 7
         if dia in dias:
