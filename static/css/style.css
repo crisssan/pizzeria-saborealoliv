@@ -354,3 +354,70 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .hero-bg, .hero-scroll { animation: none; }
 }
+
+/* ════════════════════════════════════════
+   MAPA Y RESEÑAS
+   ════════════════════════════════════════ */
+.mapa-section { padding: 96px 0; background: var(--humo); }
+
+.mapa-layout {
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: start;
+}
+
+.mapa-wrap {
+  height: 420px; border-radius: 4px; overflow: hidden;
+  border: 1px solid rgba(201,168,76,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.mapa-wrap iframe { display: block; }
+
+.mapa-info { display: flex; flex-direction: column; gap: 28px; }
+
+.mapa-datos {
+  background: var(--carbon); border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 4px; padding: 24px;
+}
+.mapa-datos h3 {
+  font-family: var(--script); font-size: 1.6rem; color: var(--dorado);
+  margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.mapa-datos p { font-size: 0.83rem; color: var(--crema); margin-bottom: 8px; line-height: 1.6; }
+
+.resenas-cta {
+  background: var(--carbon); border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 4px; padding: 24px;
+}
+.resenas-titulo {
+  font-family: var(--serif); font-size: 1rem; font-style: italic;
+  color: var(--crema-lt); margin-bottom: 8px;
+}
+.resenas-sub { font-size: 0.8rem; color: var(--texto-dim); line-height: 1.65; margin-bottom: 16px; }
+
+.btn-resena {
+  display: block; background: var(--dorado); color: var(--negro);
+  text-align: center; padding: 12px 20px; border-radius: var(--r);
+  font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em;
+  transition: background var(--tr), transform var(--tr);
+  margin-bottom: 10px;
+}
+.btn-resena:hover { background: var(--dorado-lt); transform: translateY(-1px); }
+
+.btn-ver-resenas {
+  display: block; text-align: center; font-size: 0.78rem;
+  color: var(--texto-dim); transition: color var(--tr);
+}
+.btn-ver-resenas:hover { color: var(--dorado); }
+
+.estrellas-display {
+  text-align: center; padding: 16px;
+  border: 1px solid rgba(201,168,76,0.15); border-radius: 4px;
+  background: var(--carbon);
+}
+.estrellas { font-size: 1.6rem; color: var(--dorado); letter-spacing: 4px; margin-bottom: 6px; }
+.estrellas-display p { font-size: 0.75rem; color: var(--texto-dim); }
+
+@media (max-width: 768px) {
+  .mapa-layout { grid-template-columns: 1fr; }
+  .mapa-wrap { height: 280px; }
+}

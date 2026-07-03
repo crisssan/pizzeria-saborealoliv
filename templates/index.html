@@ -25,6 +25,7 @@
     <ul class="nav-links">
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#menu">Carta</a></li>
+      <li><a href="#ubicacion">Ubicacion</a></li>
       {% if abierto %}
       <li><a href="#pedido" class="btn-nav">Pedir ahora</a></li>
       {% else %}
@@ -228,6 +229,57 @@
     <span class="wsp-badge" id="wsp-badge">1</span>
   </button>
 </div>
+
+<!-- ══ MAPA Y RESEÑAS ══ -->
+<section class="mapa-section" id="ubicacion">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Donde encontrarnos</span>
+      <h2 class="section-titulo">Ubicacion y Resenas</h2>
+      <div class="divisor"><span class="divisor-icon">✦</span></div>
+    </div>
+    <div class="mapa-layout">
+
+      <!-- Mapa embed -->
+      <div class="mapa-wrap">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3339.177575374836!2d-70.67225170000002!3d-33.183211799999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c5e8f956c5cd%3A0x8d883d6dd2126b6b!2sSabores%20al%20Oliv!5e0!3m2!1ses!2scl!4v1783106726681!5m2!1ses!2scl"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          title="Sabores al Oliv en Google Maps">
+        </iframe>
+      </div>
+
+      <!-- Info y resenas -->
+      <div class="mapa-info">
+        <div class="mapa-datos">
+          <h3>Sabores al Oliv</h3>
+          <p>📍 Roque Esteban Scarpa 2125, Colina</p>
+          <p>📞 +56 9 3962 9467</p>
+          <p>🕕 Jueves a Sabado · 18:00–23:00</p>
+          <p>🛵 Delivery solo en Colina y sectores cercanos</p>
+        </div>
+
+        <div class="resenas-cta">
+          <p class="resenas-titulo">Nos importa tu opinion</p>
+          <p class="resenas-sub">Si disfrutaste tu pizza, dejanos una resena en Google. Nos ayuda muchisimo como pequeno negocio familiar.</p>
+          <a href="https://share.google/bHm7VhX90znjQZjG9" target="_blank" class="btn-resena">
+            ⭐ Dejar una resena en Google
+          </a>
+          <a href="https://share.google/bHm7VhX90znjQZjG9" target="_blank" class="btn-ver-resenas">
+            Ver todas las resenas →
+          </a>
+        </div>
+
+        <div class="estrellas-display">
+          <div class="estrellas">★★★★★</div>
+          <p>Encuentra nuestro perfil en Google Maps</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ══ FOOTER ══ -->
 <footer class="footer">
