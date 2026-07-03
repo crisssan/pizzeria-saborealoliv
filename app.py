@@ -46,6 +46,8 @@ ESTADO_MINUTOS = {"recibido": 0, "preparando": 2, "en_horno": 8, "en_camino": 15
 
 # ── HORARIO ────────────────────────────────────────────────────────────────────
 def esta_abierto():
+    if os.environ.get("FORZAR_ABIERTO","").lower() == "true":
+        return True
     ahora = datetime.now(TZ_CHILE)
     # 3=Jueves, 4=Viernes, 5=Sabado
     if ahora.weekday() not in [3, 4, 5]:
