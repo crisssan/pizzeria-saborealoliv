@@ -47,7 +47,7 @@
           <p>📍 {{ p.direccion }}</p>
         </div>
         <div class="pedido-items">
-          {% for item in p.items %}
+          {% for item in p['items'] %}
           <span class="item-tag">{{ item.nombre }}</span>
           {% endfor %}
         </div>

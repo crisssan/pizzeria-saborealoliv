@@ -108,7 +108,9 @@ def enviar_email(asunto, cuerpo_html, destinatario=None):
         msg["From"]    = GMAIL_USER
         msg["To"]      = destinatario or ADMIN_EMAIL
         msg.attach(MIMEText(cuerpo_html, "html"))
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as srv:
+        with smtplib.SMTP("smtp.gmail.com", 587) as srv:
+            srv.ehlo()
+            srv.starttls()
             srv.login(GMAIL_USER, GMAIL_PASSWORD)
             srv.send_message(msg)
     except Exception as e:
