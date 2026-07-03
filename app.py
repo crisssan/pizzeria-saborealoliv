@@ -22,10 +22,10 @@ TELEFONO       = "+56 9 3962 9467"
 TIEMPO_ENTREGA = 20
 
 MENU = [
-    {"id": 1, "nombre": "Margarita",  "descripcion": "Salsa de tomate artesanal, mozzarella fior di latte, albahaca fresca y aceite de oliva extra virgen", "precio": 9900,  "categoria": "clasica",  "emoji": "🍅"},
-    {"id": 2, "nombre": "Pepperoni",  "descripcion": "Salsa de tomate, mozzarella, pepperoni italiano en rodajas generosas y oregano fresco",               "precio": 11900, "categoria": "clasica",  "emoji": "🍕"},
-    {"id": 3, "nombre": "Tocino",     "descripcion": "Base de crema, mozzarella, tocino crocante ahumado, cebolla caramelizada y ciboulette",               "precio": 11900, "categoria": "especial", "emoji": "🥓"},
-    {"id": 4, "nombre": "Napolitana", "descripcion": "Salsa de tomate, mozzarella, tomates cherry frescos, anchoas, aceitunas negras y oregano",            "precio": 10900, "categoria": "especial", "emoji": "🫒"},
+    {"id": 1, "nombre": "Margarita",  "descripcion": "Salsa de tomate artesanal, mozzarella fior di latte, albahaca fresca y aceite de oliva extra virgen", "precio": 9900,  "categoria": "clasica",  "emoji": "🍅", "img": "margarita.jpg"},
+    {"id": 2, "nombre": "Pepperoni",  "descripcion": "Salsa de tomate, mozzarella, pepperoni italiano en rodajas generosas y oregano fresco",               "precio": 11900, "categoria": "clasica",  "emoji": "🍕", "img": "peperoni.jpg"},
+    {"id": 3, "nombre": "Tocino",     "descripcion": "Base de crema, mozzarella, tocino crocante ahumado, cebolla caramelizada y ciboulette",               "precio": 11900, "categoria": "especial", "emoji": "🥓", "img": "tocino.jpg"},
+    {"id": 4, "nombre": "Napolitana", "descripcion": "Salsa de tomate, mozzarella, tomates cherry frescos, anchoas, aceitunas negras y oregano",            "precio": 10900, "categoria": "especial", "emoji": "🫒", "img": "napo.jpg"},
 ]
 
 ESTADOS = ["recibido", "preparando", "en_horno", "en_camino", "entregado"]
