@@ -226,7 +226,11 @@ def confirmar_pago():
     con.commit(); con.close()
     pedido = dict(row)
     items  = json.loads(pedido["items_json"])
-    email_nuevo_pedido(pedido, items)
+    # Email en try/except para que no tumbe el pedido si falla
+    try:
+        email_nuevo_pedido(pedido, items)
+    except Exception as e:
+        print("Error enviando email:", e)
     return jsonify({"ok": True, "codigo": pedido["codigo"], "redirect": f"/seguimiento/{pedido['codigo']}"})
 
 @app.route("/api/pedido/<codigo>/estado")
