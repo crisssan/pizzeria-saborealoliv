@@ -99,22 +99,54 @@ def fmt_pesos(n):
 
 # ── EMAIL ──────────────────────────────────────────────────────────────────────
 def enviar_email(asunto, cuerpo_html, destinatario=None):
+    resend_key = os.environ.get("RESEND_API_KEY", "")
+    to_email   = destinatario or ADMIN_EMAIL
+
+    # Opcion 1: Resend API (recomendado, funciona en Railway)
+    if resend_key:
+        try:
+            from urllib.request import urlopen, Request
+            from urllib.parse import urlencode
+            import base64
+            payload = json.dumps({
+                "from": "Sabores al Oliv <onboarding@resend.dev>",
+                "to": [to_email],
+                "subject": asunto,
+                "html": cuerpo_html
+            }).encode()
+            req = Request(
+                "https://api.resend.com/emails",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json"
+                },
+                method="POST"
+            )
+            urlopen(req, timeout=10)
+            print("Email enviado via Resend a", to_email)
+            return
+        except Exception as e:
+            print("Error Resend:", e)
+
+    # Opcion 2: SMTP Gmail (puede estar bloqueado en Railway)
     if not GMAIL_USER or not GMAIL_PASSWORD:
-        print("Email no configurado. Asunto:", asunto)
+        print("Email no configurado.")
         return
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = asunto
         msg["From"]    = GMAIL_USER
-        msg["To"]      = destinatario or ADMIN_EMAIL
+        msg["To"]      = to_email
         msg.attach(MIMEText(cuerpo_html, "html"))
         with smtplib.SMTP("smtp.gmail.com", 587) as srv:
             srv.ehlo()
             srv.starttls()
             srv.login(GMAIL_USER, GMAIL_PASSWORD)
             srv.send_message(msg)
+        print("Email enviado via Gmail a", to_email)
     except Exception as e:
-        print("Error email:", e)
+        print("Error Gmail SMTP:", e)
 
 def email_nuevo_pedido(pedido, items):
     lineas = "".join([f"<tr><td style='padding:8px 12px;border-bottom:1px solid #eee'>{i['nombre']}</td><td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:right'>{fmt_pesos(i['precio'])}</td></tr>" for i in items])
@@ -226,11 +258,14 @@ def confirmar_pago():
     con.commit(); con.close()
     pedido = dict(row)
     items  = json.loads(pedido["items_json"])
-    # Email en try/except para que no tumbe el pedido si falla
-    try:
-        email_nuevo_pedido(pedido, items)
-    except Exception as e:
-        print("Error enviando email:", e)
+    # Enviar email en hilo separado para no bloquear la respuesta
+    import threading
+    def enviar_en_fondo():
+        try:
+            email_nuevo_pedido(pedido, items)
+        except Exception as e:
+            print("Error email:", e)
+    threading.Thread(target=enviar_en_fondo, daemon=True).start()
     return jsonify({"ok": True, "codigo": pedido["codigo"], "redirect": f"/seguimiento/{pedido['codigo']}"})
 
 @app.route("/api/pedido/<codigo>/estado")
