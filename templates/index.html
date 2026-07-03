@@ -167,11 +167,18 @@
       </div>
       <form class="form-pedido" id="form-pedido">
         <h3>Tus datos</h3>
-        <div class="campo"><label>Nombre</label><input type="text" id="nombre" placeholder="Tu nombre completo" required></div>
-        <div class="campo"><label>Telefono</label><input type="tel" id="telefono" placeholder="+56 9 XXXX XXXX" required></div>
-        <div class="campo"><label>Email (para seguimiento del pedido)</label><input type="email" id="email" placeholder="tucorreo@gmail.com" required></div>
-        <div class="campo"><label>Direccion de entrega en Colina</label><input type="text" id="direccion" placeholder="Calle, numero, villa o sector" required></div>
-        <p class="aviso-pago">Seras redirigido a pagar antes de confirmar tu pedido</p>
+        <div class="aviso-retiro">
+            <span class="retiro-icon">🏠</span>
+            <div>
+              <p class="retiro-titulo">Retiro en local</p>
+              <p class="retiro-dir">Roque Esteban Scarpa 2125, Colina</p>
+              <p class="retiro-tiempo">Listo en aproximadamente {{ tiempo_entrega }} minutos</p>
+            </div>
+          </div>
+          <div class="campo"><label>Nombre</label><input type="text" id="nombre" placeholder="Tu nombre completo" required></div>
+          <div class="campo"><label>Telefono (te avisamos cuando este listo)</label><input type="tel" id="telefono" placeholder="+56 9 XXXX XXXX" required></div>
+          <div class="campo"><label>Email (para seguimiento)</label><input type="email" id="email" placeholder="tucorreo@gmail.com" required></div>
+          <p class="aviso-pago">Seras redirigido a pagar antes de confirmar tu pedido</p>
         <button type="submit" class="btn-pedido" id="btn-pedido">Ir a pagar →</button>
       </form>
     </div>
@@ -257,7 +264,7 @@
           <p>📍 Roque Esteban Scarpa 2125, Colina</p>
           <p>📞 +56 9 3962 9467</p>
           <p>🕕 Jueves a Sabado · 18:00–23:00</p>
-          <p>🛵 Delivery solo en Colina y sectores cercanos</p>
+          <p>🏠 Retiro en local · Roque Esteban Scarpa 2125</p>
         </div>
 
         <div class="resenas-cta">

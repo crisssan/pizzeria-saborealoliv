@@ -421,3 +421,14 @@ img { display: block; max-width: 100%; }
   .mapa-layout { grid-template-columns: 1fr; }
   .mapa-wrap { height: 280px; }
 }
+
+/* ── AVISO RETIRO ── */
+.aviso-retiro {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25);
+  border-radius: var(--r); padding: 16px; margin-bottom: 20px;
+}
+.retiro-icon { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
+.retiro-titulo { font-family: var(--serif); font-size: 0.95rem; font-style: italic; color: var(--dorado); margin-bottom: 4px; }
+.retiro-dir { font-size: 0.82rem; color: var(--crema); margin-bottom: 3px; }
+.retiro-tiempo { font-size: 0.75rem; color: var(--texto-dim); }

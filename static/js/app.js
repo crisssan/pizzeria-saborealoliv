@@ -77,7 +77,7 @@ if (formPedido) {
           nombre:    document.getElementById('nombre').value,
           telefono:  document.getElementById('telefono').value,
           email:     document.getElementById('email').value,
-          direccion: document.getElementById('direccion').value,
+          
           items: carrito,
           total: carrito.reduce((s, i) => s + i.precio, 0)
         })
