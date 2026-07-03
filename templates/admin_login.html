@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Forno Nero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .login-box { background:var(--smoke); border:1px solid var(--charcoal); border-radius:12px; padding:40px; width:100%; max-width:360px; text-align:center; }
+    .login-logo { font-family:var(--ff-display); font-size:1.8rem; color:var(--gold); margin-bottom:6px; }
+    .login-sub { font-size:0.8rem; color:var(--text-lt); margin-bottom:28px; }
+    .login-box .campo { text-align:left; margin-bottom:16px; }
+    .login-box .campo label { display:block; font-size:0.75rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-lt); margin-bottom:7px; }
+    .login-box .campo input { width:100%; background:var(--carbon); border:1px solid var(--charcoal); border-radius:4px; padding:12px 14px; color:var(--cream); font-size:0.9rem; }
+    .login-box .campo input:focus { outline:none; border-color:var(--gold); }
+    .btn-login { width:100%; background:var(--red); color:white; padding:13px; border-radius:4px; font-size:0.95rem; font-weight:600; border:none; cursor:pointer; margin-top:8px; }
+    .btn-login:hover { background:var(--red-dark); }
+    .error-msg { background:rgba(192,57,43,0.15); border:1px solid var(--red); border-radius:4px; padding:10px; font-size:0.82rem; color:#e74c3c; margin-bottom:16px; }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-box">
+      <p class="login-logo">Forno Nero</p>
+      <p class="login-sub">Panel de administrador</p>
+      {% if error %}<div class="error-msg">{{ error }}</div>{% endif %}
+      <form method="POST">
+        <div class="campo">
+          <label>Contrasena</label>
+          <input type="password" name="password" placeholder="••••••••" autofocus required>
+        </div>
+        <button type="submit" class="btn-login">Entrar</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

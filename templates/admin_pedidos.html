@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos — Admin Forno Nero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="page-admin">
+  <nav class="nav scrolled">
+    <div class="nav-inner">
+      <span class="logo">Forno Nero <span style="font-size:0.7rem;color:var(--text-lt);font-family:var(--ff-body)">Admin</span></span>
+      <a href="/admin/salir" class="btn-salir">Salir</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1>Pedidos activos</h1>
+      <p class="admin-sub">Toca el estado de cada pedido para actualizarlo. El cliente recibe WhatsApp automatico.</p>
+      <button class="btn-refresh" onclick="location.reload()">Actualizar pagina</button>
+    </div>
+
+    {% if not pedidos %}
+    <div class="sin-pedidos">
+      <p>🍕</p>
+      <p>No hay pedidos pagados aun.</p>
+      <p style="font-size:0.8rem;color:var(--text-lt)">Cuando llegue un pedido aparece aqui automaticamente.</p>
+    </div>
+    {% endif %}
+
+    <div class="pedidos-grid">
+      {% for p in pedidos %}
+      <div class="pedido-card" id="card-{{ p.codigo }}">
+        <div class="pedido-card-header">
+          <div>
+            <span class="pedido-codigo">{{ p.codigo }}</span>
+            <span class="pedido-hora">{{ p.created_at | int | string }}</span>
+          </div>
+          <span class="pedido-total">${{ "{:,.0f}".format(p.total).replace(",",".") }}</span>
+        </div>
+        <div class="pedido-cliente">
+          <p>👤 <strong>{{ p.nombre }}</strong></p>
+          <p>📞 {{ p.telefono or 'no indicado' }}</p>
+          <p>📍 {{ p.direccion }}</p>
+        </div>
+        <div class="pedido-items">
+          {% for item in p.items %}
+          <span class="item-tag">{{ item.nombre }}</span>
+          {% endfor %}
+        </div>
+        <div class="estado-selector">
+          <p class="estado-titulo">Estado actual: <strong id="label-{{ p.codigo }}">{{ estado_label[p.estado] }}</strong></p>
+          <div class="estado-btns">
+            {% for e in estados %}
+            <button
+              class="btn-estado {% if p.estado == e %}activo{% endif %}"
+              data-codigo="{{ p.codigo }}"
+              data-estado="{{ e }}"
+              onclick="cambiarEstado('{{ p.codigo }}', '{{ e }}', this)">
+              {{ estado_emoji[e] }} {{ estado_label[e] }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>
