@@ -100,7 +100,7 @@ def fmt_pesos(n):
 # ── EMAIL ──────────────────────────────────────────────────────────────────────
 def enviar_email(asunto, cuerpo_html, destinatario=None):
     resend_key = os.environ.get("RESEND_API_KEY", "")
-    to_email   = destinatario or ADMIN_EMAIL
+    to_email   = ADMIN_EMAIL  # En cuenta gratis Resend solo envia a email verificado
 
     # Opcion 1: Resend API (recomendado, funciona en Railway)
     if resend_key:
@@ -111,6 +111,7 @@ def enviar_email(asunto, cuerpo_html, destinatario=None):
             payload = json.dumps({
                 "from": "Sabores al Oliv <onboarding@resend.dev>",
                 "to": [to_email],
+                "reply_to": ADMIN_EMAIL,
                 "subject": asunto,
                 "html": cuerpo_html
             }).encode()
@@ -341,7 +342,13 @@ def admin_cambiar_estado(codigo):
     tel_email = pedido["telefono"].split("|") if "|" in pedido["telefono"] else [pedido["telefono"], ""]
     pedido["email"] = tel_email[1] if len(tel_email) > 1 else ""
     if pedido["email"]:
-        email_estado_cliente(pedido, nuevo_estado)
+        import threading
+        def enviar_estado():
+            try:
+                email_estado_cliente(pedido, nuevo_estado)
+            except Exception as e:
+                print("Error email estado:", e)
+        threading.Thread(target=enviar_estado, daemon=True).start()
     return jsonify({"ok": True, "estado": nuevo_estado, "label": ESTADO_LABEL.get(nuevo_estado,"")})
 
 if __name__ == "__main__":
