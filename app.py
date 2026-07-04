@@ -99,43 +99,38 @@ def fmt_pesos(n):
 
 # ── EMAIL ──────────────────────────────────────────────────────────────────────
 def enviar_email(asunto, cuerpo_html, destinatario=None):
-    to_email = ADMIN_EMAIL
+    brevo_key = os.environ.get("BREVO_API_KEY", "")
+    to_email  = destinatario or ADMIN_EMAIL
 
-    if not GMAIL_USER or not GMAIL_PASSWORD:
-        print("Gmail no configurado.")
+    if not brevo_key:
+        print("Brevo no configurado.")
         return
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = asunto
-    msg["From"]    = GMAIL_USER
-    msg["To"]      = to_email
-    msg.attach(MIMEText(cuerpo_html, "html"))
+    try:
+        from urllib.request import urlopen, Request
+        payload = json.dumps({
+            "sender":   {"name": "Sabores al Oliv", "email": ADMIN_EMAIL},
+            "to":       [{"email": to_email}],
+            "subject":  asunto,
+            "htmlContent": cuerpo_html
+        }).encode()
+        req = Request(
+            "https://api.brevo.com/v3/smtp/email",
+            data=payload,
+            headers={
+                "api-key":      brevo_key,
+                "Content-Type": "application/json",
+                "Accept":       "application/json"
+            },
+            method="POST"
+        )
+        urlopen(req, timeout=10)
+        print("Email enviado via Brevo a", to_email)
+    except Exception as e:
+        print("Error Brevo:", e)
 
-    # Intentar puerto 465 primero, luego 587
-    intentos = [
-        ("SSL",      lambda: _enviar_ssl(msg)),
-        ("STARTTLS", lambda: _enviar_starttls(msg)),
-    ]
-    for nombre, fn in intentos:
-        try:
-            fn()
-            print(f"Email enviado via Gmail {nombre} a {to_email}")
-            return
-        except Exception as e:
-            print(f"Error Gmail {nombre}:", e)
-    print("No se pudo enviar el email por ninguna via.")
-
-def _enviar_ssl(msg):
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as srv:
-        srv.login(GMAIL_USER, GMAIL_PASSWORD)
-        srv.send_message(msg)
-
-def _enviar_starttls(msg):
-    with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as srv:
-        srv.ehlo()
-        srv.starttls()
-        srv.login(GMAIL_USER, GMAIL_PASSWORD)
-        srv.send_message(msg)
+def _enviar_ssl(msg): pass
+def _enviar_starttls(msg): pass
 
 def email_nuevo_pedido(pedido, items):
     lineas = "".join([f"<tr><td style='padding:8px 12px;border-bottom:1px solid #eee'>{i['nombre']}</td><td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:right'>{fmt_pesos(i['precio'])}</td></tr>" for i in items])
