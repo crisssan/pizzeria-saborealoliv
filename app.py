@@ -99,55 +99,43 @@ def fmt_pesos(n):
 
 # ── EMAIL ──────────────────────────────────────────────────────────────────────
 def enviar_email(asunto, cuerpo_html, destinatario=None):
-    resend_key = os.environ.get("RESEND_API_KEY", "")
-    to_email   = ADMIN_EMAIL  # En cuenta gratis Resend solo envia a email verificado
+    to_email = ADMIN_EMAIL
 
-    # Opcion 1: Resend API (recomendado, funciona en Railway)
-    if resend_key:
+    if not GMAIL_USER or not GMAIL_PASSWORD:
+        print("Gmail no configurado.")
+        return
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = asunto
+    msg["From"]    = GMAIL_USER
+    msg["To"]      = to_email
+    msg.attach(MIMEText(cuerpo_html, "html"))
+
+    # Intentar puerto 465 primero, luego 587
+    intentos = [
+        ("SSL",      lambda: _enviar_ssl(msg)),
+        ("STARTTLS", lambda: _enviar_starttls(msg)),
+    ]
+    for nombre, fn in intentos:
         try:
-            from urllib.request import urlopen, Request
-            from urllib.parse import urlencode
-            import base64
-            payload = json.dumps({
-                "from": "Sabores al Oliv <onboarding@resend.dev>",
-                "to": [to_email],
-                "reply_to": ADMIN_EMAIL,
-                "subject": asunto,
-                "html": cuerpo_html
-            }).encode()
-            req = Request(
-                "https://api.resend.com/emails",
-                data=payload,
-                headers={
-                    "Authorization": f"Bearer {resend_key}",
-                    "Content-Type": "application/json"
-                },
-                method="POST"
-            )
-            urlopen(req, timeout=10)
-            print("Email enviado via Resend a", to_email)
+            fn()
+            print(f"Email enviado via Gmail {nombre} a {to_email}")
             return
         except Exception as e:
-            print("Error Resend:", e)
+            print(f"Error Gmail {nombre}:", e)
+    print("No se pudo enviar el email por ninguna via.")
 
-    # Opcion 2: SMTP Gmail (puede estar bloqueado en Railway)
-    if not GMAIL_USER or not GMAIL_PASSWORD:
-        print("Email no configurado.")
-        return
-    try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = asunto
-        msg["From"]    = GMAIL_USER
-        msg["To"]      = to_email
-        msg.attach(MIMEText(cuerpo_html, "html"))
-        with smtplib.SMTP("smtp.gmail.com", 587) as srv:
-            srv.ehlo()
-            srv.starttls()
-            srv.login(GMAIL_USER, GMAIL_PASSWORD)
-            srv.send_message(msg)
-        print("Email enviado via Gmail a", to_email)
-    except Exception as e:
-        print("Error Gmail SMTP:", e)
+def _enviar_ssl(msg):
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as srv:
+        srv.login(GMAIL_USER, GMAIL_PASSWORD)
+        srv.send_message(msg)
+
+def _enviar_starttls(msg):
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as srv:
+        srv.ehlo()
+        srv.starttls()
+        srv.login(GMAIL_USER, GMAIL_PASSWORD)
+        srv.send_message(msg)
 
 def email_nuevo_pedido(pedido, items):
     lineas = "".join([f"<tr><td style='padding:8px 12px;border-bottom:1px solid #eee'>{i['nombre']}</td><td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:right'>{fmt_pesos(i['precio'])}</td></tr>" for i in items])
