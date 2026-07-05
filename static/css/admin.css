@@ -35,3 +35,20 @@
 .btn-estado:hover { border-color: var(--gold); color: var(--cream); }
 .btn-estado.activo { background: rgba(232,168,56,0.12); border-color: var(--gold); color: var(--gold); font-weight: 600; }
 .btn-estado.cargando { opacity: 0.5; cursor: wait; }
+
+.admin-controles { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.btn-tienda {
+  padding: 8px 20px; border-radius: 4px; font-size: 0.82rem;
+  font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
+}
+.btn-tienda-cerrar { background: var(--red); color: white; }
+.btn-tienda-cerrar:hover { background: var(--red-dark); }
+.btn-tienda-abrir { background: #25D366; color: white; }
+.btn-tienda-abrir:hover { background: #1DA851; }
+
+.tienda-badge {
+  font-size: 0.8rem; font-weight: 600; padding: 8px 14px;
+  border-radius: 4px; display: inline-block; margin-bottom: 16px;
+}
+.tienda-abierta { background: rgba(37,211,102,0.15); color: #25D366; border: 1px solid rgba(37,211,102,0.3); }
+.tienda-cerrada { background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }

@@ -53,14 +53,27 @@ def init_db():
             estado      TEXT    NOT NULL DEFAULT 'recibido',
             created_at  REAL    NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS config (
+            clave TEXT PRIMARY KEY,
+            valor TEXT NOT NULL
+        );
+        INSERT OR IGNORE INTO config (clave, valor) VALUES ('tienda_abierta', '1');
     """)
     con.commit(); con.close()
 
 init_db()
 
+def tienda_manual_abierta():
+    con = get_db()
+    row = con.execute("SELECT valor FROM config WHERE clave='tienda_abierta'").fetchone()
+    con.close()
+    return row and row["valor"] == "1"
+
 def esta_abierto():
     if os.environ.get("FORZAR_ABIERTO","").lower() == "true":
         return True
+    if not tienda_manual_abierta():
+        return False
     ahora = datetime.now(TZ_CHILE)
     if ahora.weekday() not in [3, 4, 5]:
         return False
@@ -83,8 +96,14 @@ def fmt_pesos(n):
 @app.route("/")
 def index():
     abierto = esta_abierto()
+    manual  = tienda_manual_abierta()
+    # Agotado = horario correcto pero cerrado manualmente
+    ahora   = datetime.now(TZ_CHILE)
+    en_horario = ahora.weekday() in [3,4,5] and 18 <= (ahora.hour + ahora.minute/60) < 23
+    agotado = en_horario and not manual
     proximo = proximo_horario() if not abierto else None
     return render_template("index.html", menu=MENU, abierto=abierto, proximo=proximo,
+                           agotado=agotado,
                            nombre_local=NOMBRE_LOCAL, direccion=DIRECCION,
                            telefono=TELEFONO, tiempo_entrega=TIEMPO_ENTREGA)
 
@@ -177,6 +196,21 @@ def admin_cambiar_estado(codigo):
     con.execute("UPDATE pedidos SET estado=? WHERE codigo=?", (nuevo_estado, codigo))
     con.commit(); con.close()
     return jsonify({"ok": True, "estado": nuevo_estado, "label": ESTADO_LABEL.get(nuevo_estado,"")})
+
+@app.route("/admin/tienda", methods=["POST"])
+def admin_tienda():
+    if not session.get("admin"):
+        return jsonify({"ok": False}), 401
+    accion = request.json.get("accion","")
+    valor  = "1" if accion == "abrir" else "0"
+    con = get_db()
+    con.execute("UPDATE config SET valor=? WHERE clave='tienda_abierta'", (valor,))
+    con.commit(); con.close()
+    return jsonify({"ok": True, "abierta": valor == "1"})
+
+@app.route("/api/estado-tienda")
+def api_estado_tienda():
+    return jsonify({"abierta": esta_abierto(), "manual": tienda_manual_abierta()})
 
 if __name__ == "__main__":
     app.run(debug=True)

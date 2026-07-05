@@ -10,7 +10,11 @@
 </head>
 <body>
 
-{% if not abierto %}
+{% if agotado %}
+<div class="banner-cerrado" style="background:#8B4513">
+  🍕 Se agotaron las pizzas por hoy — Volvemos el proximo dia disponible
+</div>
+{% elif not abierto %}
 <div class="banner-cerrado">
   Estamos cerrados — Abrimos {{ proximo }} &nbsp;·&nbsp; Jue, Vie y Sab 18:00–23:00
 </div>

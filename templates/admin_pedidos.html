@@ -19,8 +19,18 @@
   <main class="admin-main">
     <div class="admin-header">
       <h1>Pedidos activos</h1>
-      <p class="admin-sub">Toca el estado de cada pedido para actualizarlo. El cliente recibe WhatsApp automatico.</p>
-      <button class="btn-refresh" onclick="location.reload()">Actualizar pagina</button>
+      <p class="admin-sub">Toca el estado de cada pedido para actualizarlo.</p>
+      <div class="admin-controles">
+        <button class="btn-refresh" onclick="location.reload()">↻ Actualizar</button>
+        <button class="btn-tienda {% if abierto %}btn-tienda-cerrar{% else %}btn-tienda-abrir{% endif %}"
+                id="btn-tienda"
+                data-estado="{% if abierto %}abierta{% else %}cerrada{% endif %}">
+          {% if abierto %}🟢 Cerrar tienda{% else %}🔴 Abrir tienda{% endif %}
+        </button>
+      </div>
+      <div class="tienda-badge {% if abierto %}tienda-abierta{% else %}tienda-cerrada{% endif %}" id="tienda-badge">
+        {% if abierto %}✅ Tienda abierta — recibiendo pedidos{% else %}⛔ Tienda cerrada — no se reciben pedidos{% endif %}
+      </div>
     </div>
 
     {% if not pedidos %}
