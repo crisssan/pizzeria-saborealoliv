@@ -21,21 +21,29 @@ function fmt(n) { return '$' + Number(n).toLocaleString('es-CL'); }
 function renderCarrito() {
   const lista    = document.getElementById('carrito-items');
   const totalBox = document.getElementById('carrito-total');
+  const btnPedir = document.getElementById('btn-pedido');
   if (!lista) return;
+
   if (!carrito.length) {
     lista.innerHTML = '<p class="carrito-vacio">Agrega pizzas desde el menu arriba</p>';
     if (totalBox) totalBox.style.display = 'none';
+    if (btnPedir) btnPedir.disabled = true;
     return;
   }
+
   lista.innerHTML = carrito.map((item, i) => `
     <div class="carrito-item">
       <span class="carrito-item-nombre">${item.nombre}</span>
       <span class="carrito-item-precio">${fmt(item.precio)}</span>
-      <button class="btn-quitar" data-idx="${i}">x</button>
+      <button class="btn-quitar" data-idx="${i}">✕</button>
     </div>`).join('');
+
   const total = carrito.reduce((s, i) => s + i.precio, 0);
-  if (document.getElementById('total-valor')) document.getElementById('total-valor').textContent = fmt(total);
+  if (document.getElementById('total-valor'))
+    document.getElementById('total-valor').textContent = fmt(total);
   if (totalBox) totalBox.style.display = 'flex';
+  if (btnPedir) btnPedir.disabled = false;
+
   document.querySelectorAll('.btn-quitar').forEach(btn =>
     btn.addEventListener('click', () => { carrito.splice(+btn.dataset.idx, 1); renderCarrito(); })
   );
@@ -45,10 +53,10 @@ document.querySelectorAll('.btn-agregar:not(.btn-agregar-off)').forEach(btn => {
   btn.addEventListener('click', () => {
     carrito.push({ id: btn.dataset.id, nombre: btn.dataset.nombre, precio: +btn.dataset.precio });
     renderCarrito();
-    showToast('+ ' + btn.dataset.nombre + ' agregada al carrito');
-    btn.textContent = 'Agregado';
-    btn.style.cssText = 'background:var(--red);color:white;border-color:var(--red)';
-    setTimeout(() => { btn.textContent = 'Agregar'; btn.style.cssText = ''; }, 1400);
+    showToast('+ ' + btn.dataset.nombre + ' agregada');
+    btn.textContent = '✓ Agregado';
+    btn.style.cssText = 'background:var(--rojo);color:white;border-color:var(--rojo)';
+    setTimeout(() => { btn.textContent = '+ Agregar'; btn.style.cssText = ''; }, 1400);
   });
 });
 
@@ -62,30 +70,43 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-/* ── FORM PEDIDO ── */
+/* ── GENERAR CODIGO PEDIDO ── */
+function generarCodigo() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let codigo = 'OL-';
+  for (let i = 0; i < 6; i++) codigo += chars[Math.floor(Math.random() * chars.length)];
+  return codigo;
+}
+
+/* ── FORM: redirigir a WhatsApp ── */
 const formPedido = document.getElementById('form-pedido');
 if (formPedido) {
-  formPedido.addEventListener('submit', async e => {
+  formPedido.addEventListener('submit', e => {
     e.preventDefault();
     if (!carrito.length) { showToast('Agrega al menos una pizza primero!'); return; }
-    const btn = document.getElementById('btn-pedido');
-    btn.disabled = true; btn.textContent = 'Creando pedido...';
-    try {
-      const res  = await fetch('/api/pedido', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre:    document.getElementById('nombre').value,
-          telefono:  document.getElementById('telefono').value,
-          email:     document.getElementById('email').value,
-          
-          items: carrito,
-          total: carrito.reduce((s, i) => s + i.precio, 0)
-        })
-      });
-      const data = await res.json();
-      if (data.ok) { window.location.href = data.pago_url; }
-      else { showToast('Error: ' + (data.error || 'intenta de nuevo')); btn.disabled = false; btn.textContent = 'Ir a pagar'; }
-    } catch { showToast('Error de conexion.'); btn.disabled = false; btn.textContent = 'Ir a pagar'; }
+
+    const nombre    = document.getElementById('nombre').value.trim();
+    const telefono  = document.getElementById('telefono').value.trim();
+    const codigo    = generarCodigo();
+    const total     = carrito.reduce((s, i) => s + i.precio, 0);
+    const items     = carrito.map(i => `- ${i.nombre}: ${fmt(i.precio)}`).join('\n');
+
+    const mensaje =
+`🍕 *NUEVO PEDIDO ${codigo}*
+
+💰 Total: *${fmt(total)}*
+👤 ${nombre}
+📞 ${telefono}
+📍 Retiro en local: Roque Esteban Scarpa 2125, Colina
+
+*Pizzas:*
+${items}
+
+_Esperando confirmacion y datos de transferencia_`;
+
+    guardarPedido(codigo, nombre, telefono, carrito, total);
+    const url = 'https://wa.me/56939629467?text=' + encodeURIComponent(mensaje);
+    window.open(url, '_blank');
   });
 }
 
@@ -103,3 +124,14 @@ if (formPedido) {
   });
   cerrar.addEventListener('click', e => { e.stopPropagation(); popup.classList.remove('visible'); });
 })();
+
+/* ── Guardar pedido en BD al enviar a WhatsApp ── */
+async function guardarPedido(codigo, nombre, telefono, items, total) {
+  try {
+    await fetch('/api/pedido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo, nombre, telefono, items, total })
+    });
+  } catch(e) { console.log('Error guardando pedido:', e); }
+}
