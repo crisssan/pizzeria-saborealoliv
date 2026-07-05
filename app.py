@@ -30,19 +30,19 @@ MENU = [
     {"id": 4, "nombre": "Napolitana", "descripcion": "Salsa de tomate, mozzarella, tomates cherry frescos, anchoas, aceitunas negras y oregano",            "precio": 7000, "categoria": "especial", "emoji": "🫒", "img": "napo.jpg"},
 ]
 
-ESTADOS = ["recibido", "preparando", "en_horno", "en_camino", "entregado"]
+ESTADOS = ["recibido", "preparando", "en_horno", "listo", "entregado"]
 ESTADO_LABEL = {
     "recibido":   "Pedido recibido",
     "preparando": "Preparando tu pizza",
     "en_horno":   "En el horno",
-    "en_camino":  "En camino",
-    "entregado":  "Entregado",
+    "listo":      "Lista para retirar",
+    "entregado":  "Entregada, buen provecho!",
 }
 ESTADO_EMOJI = {
-    "recibido": "📋", "preparando": "👨‍🍳", "en_horno": "🔥", "en_camino": "🛵", "entregado": "🍕"
+    "recibido": "📋", "preparando": "👨‍🍳", "en_horno": "🔥", "listo": "✅", "entregado": "🍕"
 }
 # Minutos reales para cada estado (total ~20 min)
-ESTADO_MINUTOS = {"recibido": 0, "preparando": 2, "en_horno": 8, "en_camino": 15, "entregado": 20}
+ESTADO_MINUTOS = {"recibido": 0, "preparando": 2, "en_horno": 8, "listo": 15, "entregado": 20}
 
 # ── HORARIO ────────────────────────────────────────────────────────────────────
 def esta_abierto():

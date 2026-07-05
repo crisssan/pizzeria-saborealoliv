@@ -1,5 +1,5 @@
-const ICONOS = { recibido:'📋', preparando:'👨‍🍳', en_horno:'🔥', en_camino:'🛵', entregado:'🍕' };
-const TIEMPOS = { recibido:'Confirmando con el local…', preparando:'Preparando tus ingredientes frescos…', en_horno:'¡En el horno! ~10 minutos', en_camino:'Tu pizza está en camino 🛵', entregado:'¡Disfruta tu pizza! 🍕' };
+const ICONOS = { recibido:'📋', preparando:'👨‍🍳', en_horno:'🔥', listo:'✅', entregado:'🍕' };
+const TIEMPOS = { recibido:'Confirmando tu pedido…', preparando:'Preparando tus ingredientes frescos…', en_horno:'En el horno, casi lista!', listo:'Tu pizza esta lista! Puedes venir a buscarla ✅', entregado:'Gracias por elegirnos. Buen provecho! 🍕' };
 
 let ultimoEstado = null;
 let intervalo;
