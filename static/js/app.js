@@ -89,7 +89,21 @@ if (formPedido) {
     const telefono  = document.getElementById('telefono').value.trim();
     const codigo    = generarCodigo();
     const total     = carrito.reduce((s, i) => s + i.precio, 0);
-    const items     = carrito.map(i => `- ${i.nombre}: ${fmt(i.precio)}`).join('\n');
+    // Agrupar pizzas repetidas
+    const agrupado = {};
+    carrito.forEach(i => {
+      if (agrupado[i.nombre]) {
+        agrupado[i.nombre].cantidad++;
+        agrupado[i.nombre].subtotal += i.precio;
+      } else {
+        agrupado[i.nombre] = { cantidad: 1, precio: i.precio, subtotal: i.precio };
+      }
+    });
+    const items = Object.entries(agrupado).map(([nombre, d]) =>
+      d.cantidad > 1
+        ? `- ${d.cantidad}x ${nombre}: ${fmt(d.subtotal)}`
+        : `- ${nombre}: ${fmt(d.precio)}`
+    ).join('\n');
 
     const mensaje =
 `🍕 *NUEVO PEDIDO ${codigo}*
